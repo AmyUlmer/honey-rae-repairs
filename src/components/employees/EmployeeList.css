@@ -1,0 +1,15 @@
+.employees{
+    display:flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+
+}
+
+.employee{
+    background-color:darkmagenta;
+    border: 2px dotted darkolivegreen;
+    color:aliceblue;
+    padding: 0.5rem;
+    margin: 0.5rem;
+}
