@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
+import { Ticket } from "./Ticket"
 import "./Tickets.css" 
 
 //The React library provides you with a function named useState() to store the state in a component. The function returns an array. The array contains the intial state value at index 0 and a function that modifies the state at index 1.
@@ -12,6 +13,7 @@ import "./Tickets.css"
 
 export const TicketList = ({searchTermState}) => { //deconstruct object from TicketContainer. value of the key is the actual state from the parent
     const [tickets, setTickets] = useState([])
+    const [employees, setEmployees] = useState([]) //state vairable to store in component state. state=employess fullName. to be used with fetch (`http://localhost:8088/employees?_expand=user`). Empty array that will be filled in after the fetch call response.
     const [filteredTickets, setFiltered] = useState([])
     //track if Emergenvy Only button is being use
     //by default you don't want to show only emergency tickets- set false
@@ -55,9 +57,12 @@ export const TicketList = ({searchTermState}) => { //deconstruct object from Tic
         )
 
     //setTickets is a function to change the state.Want to change it to the entire array of serviceTickets from API. 
-    useEffect(
+    useEffect( // this is the useEffect that ir running after initial state is set 
+    //where you write code to go get all information from permanent state from API
         () => {
-            fetch (`http://localhost:8088/serviceTickets`)
+            // fetch (`http://localhost:8088/serviceTickets`)
+            // change original fetch to get employeeTickets that are being worked on-- chp.16--each one of the serviceTickets is going to have employeeTickets property
+            fetch (`http://localhost:8088/serviceTickets?_embed=employeeTickets`)
                 .then((response) => response.json())
                 .then((ticketArray) => { //parameter to capture data after json processing is done
                     setTickets(ticketArray) //use setter function to pass it to what you want new value to be(ticketArray)
@@ -65,8 +70,19 @@ export const TicketList = ({searchTermState}) => { //deconstruct object from Tic
             // console.log("Initial state of tickets", tickets) // View the initial state of tickets
         },[]) // When this array is empty, you are observing initial component state)
 
-    // if ticket state changes, should I show all tickets? or just a customers tickets? So, need to observe tickets state.
-    //login as a customer. get tickets to only show that log-in.    
+        //useEffect to get all of the employees fullName that are working 
+        useEffect( 
+        () => {
+            fetch (`http://localhost:8088/employees?_expand=user`)
+                .then((response) => response.json())
+                .then((employeeArray) => {
+                    setEmployees(employeeArray) 
+                })
+        },[]) 
+
+
+        
+        
     useEffect(
         () => {
             if (honeyUserObject.staff){
@@ -119,12 +135,13 @@ export const TicketList = ({searchTermState}) => { //deconstruct object from Tic
             {
                 // tickets.map( change to filtered tickets, so not to show all of the tickets
                 filteredTickets.map(
-                    (ticket) => {
-                        return <section key={ticket.id} className="ticket" >
-                            <header>{ticket.description}</header>
-                            <footer>Emergency: {ticket.emergency ? "!" : "No"}</footer>
-                        </section>
-                    }
+                    //use implicit return
+                    // create a prop-ticketObject- who's value is current ticket
+                    // {ticket} is the parameter for our call back function for map
+                    //as this iterates it will create a brand new ticket component
+                    //add another prop component-isStaff- to see if ticket holder is customer or not. vale ={honeyUserObject}- from TicketList
+                    //pass entire emplyees array as a prop. Why? on inital getting info from the API, do logic in this component. 
+                    (ticket) => <Ticket employees={employees} isStaff={honeyUserObject.staff} ticketObject={ticket} />
                 )
             }
         </article>

@@ -2,8 +2,9 @@ import { Outlet, Route, Routes } from "react-router-dom"
 import { EmployeeDetails } from "../employees/EmployeeDetails"
 import { EmployeeList } from "../employees/EmployeeList"
 import { TicketContainer } from "../tickets/TicketsContainer"
-import { CustomerDetails } from "../Customers/CustomerDetails"
-import { CustomerList } from "../Customers/CustomerList"
+import { CustomerDetails } from "../customers/CustomerDetails"
+import { CustomerList } from "../customers/CustomerList"
+import { Profile } from "../profile/Profile"
 
 // known as a higher order component
 //DO want TicketContainer
@@ -20,6 +21,7 @@ export const EmployeeViews = () => {
                 </>
             }>
 
+                <Route path="profile" element={ <Profile/> } />
                 <Route path="tickets" element={ <TicketContainer/> } />
                 <Route path="employees" element={ <EmployeeList/> } />
                 <Route path="employees/:employeeId" element={ <EmployeeDetails/> } />

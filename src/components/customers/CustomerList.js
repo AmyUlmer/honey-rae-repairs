@@ -9,12 +9,12 @@ import { useEffect, useState } from "react"
 import { Customer } from "./Customer"
 
 
-export const CostumerList =() => { 
+export const CustomerList =() => { 
     const [customers, setCustomers] = useState([])
 
     useEffect(
         () => {
-            fetch (`http://localhost:8088/users?isStaff=false`) //query string parameter, everythin after question mark are additional parameters in request to server
+            fetch (`http://localhost:8088/customers?_expand=user`) //query string parameter, everythin after question mark are additional parameters in request to server
                 .then((response) => response.json())
                 .then((customerArray) => { 
                     setCustomers(customerArray)
@@ -29,9 +29,9 @@ export const CostumerList =() => {
             // 4 values come from customer parameter, individual object as we're iterating customers
             customers.map(customer => <Customer key={`customer--${customer.id}`}
                 id={customer.id} 
-                fullName={customer.fullName} 
+                fullName={customer.user.fullName} 
                 address={customer.address}
-                phoneNumber={customer} /> )
+                phoneNumber={customer.phoneNumber} /> )
 
         }
         </article>
